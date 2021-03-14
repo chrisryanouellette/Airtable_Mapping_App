@@ -24,7 +24,7 @@ export function SelectTables(props: SelectTablesProps) {
 			(mapping) => mapping.id
 		)
 		setselectedTables(selectedTables)
-	}, [props.step])
+	}, [props.step, !!Object.keys(props.tableMappings).length])
 
 	function handleSelectTable(id: string): void {
 		const tables = [...selectedTables]

@@ -1,20 +1,30 @@
-import { Box, Heading, Text } from '@airtable/blocks/ui'
+import { Button, Heading, Icon } from '@airtable/blocks/ui'
 import React from 'react'
+import { Container } from './styled'
 
-export function Header() {
+interface HeaderProps {
+	step: number
+	showSettingMenu(): void
+}
+
+export function Header(props: HeaderProps) {
 	return (
 		<header>
-			<Box
+			<Container
 				display='flex'
 				justifyContent='space-between'
 				alignItems='center'
 				width='100%'
 			>
 				<Heading size='large'>Mapping App</Heading>
-				<Text>
-					An app for creating Base, Table, View, and Field Mappings.
-				</Text>
-			</Box>
+				{props.step === 0 && (
+					<Button
+						icon={<Icon name='edit' />}
+						aria-label='edit mappings'
+						onClick={props.showSettingMenu}
+					/>
+				)}
+			</Container>
 		</header>
 	)
 }

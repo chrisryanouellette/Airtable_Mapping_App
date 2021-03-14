@@ -1,8 +1,9 @@
 import React from 'react'
 
 interface TextAreaProps {
-	ref?: React.MutableRefObject<HTMLTextAreaElement>
 	value: string | number
+	ref?: React.MutableRefObject<HTMLTextAreaElement>
+	onChange?(e: React.ChangeEvent<HTMLTextAreaElement>)
 }
 
 export const TextArea = React.forwardRef(
@@ -15,7 +16,13 @@ export const TextArea = React.forwardRef(
 			width: '100%',
 		}
 		return (
-			<textarea style={styles} value={props.value} ref={ref} readOnly />
+			<textarea
+				style={styles}
+				value={props.value}
+				ref={ref}
+				onChange={props?.onChange}
+				readOnly={!props.onChange}
+			/>
 		)
 	}
 )

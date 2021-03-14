@@ -60,7 +60,9 @@ export function SelectViews(props: SelectViewProps) {
 					return true
 				}
 			})
-
+			const existingView = Object.values(props.viewMappings).find(
+				(view) => view.id === id
+			)
 			let refName = createRefName(view.name)
 			if (viewMappings[refName]) {
 				refName = refName + Math.floor(Math.random() * 100).toString()
@@ -70,7 +72,7 @@ export function SelectViews(props: SelectViewProps) {
 				name: view.name,
 				tableId,
 				refName,
-				fields: {},
+				fields: existingView?.fields || {},
 			}
 		})
 		props.updateMappings('views', viewMappings)
