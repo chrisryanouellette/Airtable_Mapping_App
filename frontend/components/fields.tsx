@@ -29,7 +29,7 @@ export function SelectFields(props: SelectFieldProps) {
 			props.base.getTable(mapping.id)
 		)
 		const fields: { [viewId: string]: Field[] } = {}
-		tables.map((table) => {
+		tables.forEach((table) =>
 			table.views
 				.filter((view) =>
 					Object.values(props.viewMappings).some(
@@ -37,8 +37,7 @@ export function SelectFields(props: SelectFieldProps) {
 					)
 				)
 				.forEach((view) => (fields[view.id] = table.fields))
-			return [table.id, table.views]
-		})
+		)
 		const selectedFields: { [viewId: string]: string[] } = {}
 		Object.values(props.viewMappings).forEach((mapping) => {
 			selectedFields[mapping.id] = Object.values(mapping.fields).map(
