@@ -49,6 +49,19 @@ export function useMappings(): {
 			return 'fields' in Object.values(mappings)[0]
 		}
 
+		function removeOldReference(
+			items: { [index: string]: string },
+			itemId: string,
+			newRefName: string
+		): { [index: string]: string } {
+			Object.entries(items).forEach(([refName, id]) => {
+				if (id === itemId && refName !== newRefName) {
+					delete items[refName]
+				}
+			})
+			return items
+		}
+
 		if (key === 'bases' && isBaseMappings(newMappings)) {
 			mappings[key] = newMappings
 		} else if (key === 'tables' && isTableMappings(newMappings)) {
@@ -57,6 +70,11 @@ export function useMappings(): {
 					(mapping) => mapping.id === tableMappings.baseId
 				)
 				baseMapping.tables[tableMappings.refName] = tableMappings.id
+				baseMapping.tables = removeOldReference(
+					baseMapping.tables,
+					tableMappings.id,
+					tableMappings.refName
+				)
 			})
 			mappings[key] = newMappings
 		} else if (key === 'views' && isViewMappings(newMappings)) {
@@ -65,6 +83,11 @@ export function useMappings(): {
 					(mapping) => mapping.id === viewMappings.tableId
 				)
 				tableMapping.views[viewMappings.refName] = viewMappings.id
+				tableMapping.views = removeOldReference(
+					tableMapping.views,
+					viewMappings.id,
+					viewMappings.refName
+				)
 			})
 			mappings[key] = newMappings
 		} else {
