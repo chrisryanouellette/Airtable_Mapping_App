@@ -95,7 +95,7 @@ export function useMappings(): {
 				'Enable to update mappings. Invalid mapping passed to update function'
 			)
 		}
-		setmappings(mappings)
+		setmappings({ ...mappings })
 	}, [])
 
 	return { mappings, setMappings: updateMappings }
