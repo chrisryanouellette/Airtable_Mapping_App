@@ -45,8 +45,7 @@ export function Card(props: CardProps) {
 				backgroundColor: 'white',
 				boxShadow: '1px 2px 5px rgba(0,0,0,0.5)',
 				margin: '8px 16px',
-				width: '25%',
-				maxWidth: '200px',
+				width: 'clamp(150px, 25%, 200px)',
 				padding: '8px 16px',
 			}}
 		>
