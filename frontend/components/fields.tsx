@@ -1,7 +1,7 @@
 import { Base, Field, View } from '@airtable/blocks/models'
 import { Box, Button, Text } from '@airtable/blocks/ui'
 import React, { useEffect, useState } from 'react'
-import { createRefName, splitRefName } from '../helpers'
+import { createRefName, sortByProp, splitRefName } from '../helpers'
 import { UpdateMappings } from '../hooks/useMappings'
 import { TableMapping, ViewMapping } from '../types'
 import { Container } from './styled'
@@ -121,7 +121,7 @@ export function SelectFields(props: SelectFieldProps) {
 							justifyContent='flex-start'
 							margin='1% 0'
 						>
-							{fields.map((field) =>
+							{sortByProp(fields, 'name').map((field) =>
 								FieldCard({
 									viewId,
 									field,

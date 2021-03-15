@@ -30,3 +30,11 @@ export function splitRefName(refName: string): string {
 
 	return formatted
 }
+
+export function sortByProp<T>(list: T[], prop: string): T[] {
+	return list.sort((a, b) => {
+		if (a[prop] < b[prop]) return -1
+		if (a[prop] > b[prop]) return 1
+		return 0
+	})
+}
