@@ -103,38 +103,44 @@ export function SelectFields(props: SelectFieldProps) {
 				Then select all the fields that will be used by the App or
 				Automation.
 			</Text>
-			{Object.entries(fields).map(([viewId, fields], index) => {
-				const viewMapping = Object.values(props.viewMappings).find(
-					(mapping) => mapping.id === viewId
+			{Object.entries(fields)
+				.filter(([viewId, fields]) =>
+					Object.values(props.viewMappings).some(
+						(mapping) => mapping.id === viewId
+					)
 				)
-				const tableMapping = Object.values(props.tableMappings).find(
-					(mapping) => mapping.id === viewMapping.tableId
-				)
-				return (
-					<Container key={index} marginTop='16px'>
-						<Text size='large'>
-							{tableMapping.name} - {viewMapping.name}
-						</Text>
-						<Container
-							display='flex'
-							flexWrap='wrap'
-							justifyContent='flex-start'
-							margin='1% 0'
-						>
-							{sortByProp(fields, 'name').map((field) =>
-								FieldCard({
-									viewId,
-									field,
-									isSelected: selectedFields[
-										viewId
-									]?.includes(field.id),
-									handleSelectField,
-								})
-							)}
+				.map(([viewId, fields], index) => {
+					const viewMapping = Object.values(props.viewMappings).find(
+						(mapping) => mapping.id === viewId
+					)
+					const tableMapping = Object.values(
+						props.tableMappings
+					).find((mapping) => mapping.id === viewMapping.tableId)
+					return (
+						<Container key={index} marginTop='16px'>
+							<Text size='large'>
+								{tableMapping.name} - {viewMapping.name}
+							</Text>
+							<Container
+								display='flex'
+								flexWrap='wrap'
+								justifyContent='flex-start'
+								margin='1% 0'
+							>
+								{sortByProp(fields, 'name').map((field) =>
+									FieldCard({
+										viewId,
+										field,
+										isSelected: selectedFields[
+											viewId
+										]?.includes(field.id),
+										handleSelectField,
+									})
+								)}
+							</Container>
 						</Container>
-					</Container>
-				)
-			})}
+					)
+				})}
 			<Box
 				display='flex'
 				marginTop='auto'
