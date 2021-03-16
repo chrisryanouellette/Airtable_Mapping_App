@@ -29,11 +29,11 @@ export function EditReferenceNames(props: EditReferenceNamesProps) {
 
 	useEffect(() => {
 		setselectedBase(Object.values(props.mappings.bases)[0]?.id || '')
-	}, [!!Object.keys(props.mappings.bases).length])
+	}, [props.step, !!Object.keys(props.mappings.bases).length])
 
 	useEffect(() => {
 		setselectedTable(Object.values(props.mappings.tables)[0]?.id || '')
-	}, [!!Object.keys(props.mappings.tables).length])
+	}, [props.step, !!Object.keys(props.mappings.tables).length])
 
 	const defaultValue = useMemo<SelectOption[]>(
 		() => [{ value: '', label: '' }],
@@ -71,6 +71,13 @@ export function EditReferenceNames(props: EditReferenceNamesProps) {
 
 	function concat(...arrays: SelectOption[][]): SelectOption[] {
 		return [].concat(arrays).flat()
+	}
+
+	function clearForm() {
+		setselectedBase('')
+		setselectedTable('')
+		setselectedView('')
+		setselectedField('')
 	}
 
 	function handleSelectMapping(
@@ -158,6 +165,7 @@ export function EditReferenceNames(props: EditReferenceNamesProps) {
 			}
 		)
 		setchangedRefNames({ bases: {}, tables: {}, views: {}, field: {} })
+		clearForm()
 		props.advanceStep()
 	}
 
