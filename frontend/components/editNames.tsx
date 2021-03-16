@@ -27,14 +27,6 @@ export function EditReferenceNames(props: EditReferenceNamesProps) {
 	}>({ bases: {}, tables: {}, views: {}, field: {} })
 	const [warning, setwarning] = useState<string>('')
 
-	useEffect(() => {
-		setselectedBase(Object.values(props.mappings.bases)[0]?.id || '')
-	}, [props.step, !!Object.keys(props.mappings.bases).length])
-
-	useEffect(() => {
-		setselectedTable(Object.values(props.mappings.tables)[0]?.id || '')
-	}, [props.step, !!Object.keys(props.mappings.tables).length])
-
 	const defaultValue = useMemo<SelectOption[]>(
 		() => [{ value: '', label: '' }],
 		[]
@@ -214,12 +206,14 @@ export function EditReferenceNames(props: EditReferenceNamesProps) {
 								label: mapping.name,
 							}))
 					)}
+					disabled={!selectedBase}
 					value={selectedTable}
 					onChange={(e) => handleSelectMapping('table', e.toString())}
 				/>
 				<Input
 					placeholder='Table Ref Name'
 					marginTop='8px'
+					disabled={!selectedBase}
 					value={returnRefName('tables', selectedTable)}
 					onChange={(e) =>
 						handleEditRefName(
@@ -245,12 +239,14 @@ export function EditReferenceNames(props: EditReferenceNamesProps) {
 								label: mapping.name,
 							}))
 					)}
+					disabled={!selectedTable}
 					value={selectedView}
 					onChange={(e) => handleSelectMapping('view', e.toString())}
 				/>
 				<Input
 					placeholder='View Ref Name'
 					marginTop='8px'
+					disabled={!selectedTable}
 					value={returnRefName('views', selectedView)}
 					onChange={(e) =>
 						handleEditRefName('views', selectedView, e.target.value)
@@ -272,12 +268,14 @@ export function EditReferenceNames(props: EditReferenceNamesProps) {
 							label: mapping.name,
 						}))
 					)}
+					disabled={!selectedView}
 					value={selectedField}
 					onChange={(e) => handleSelectMapping('field', e.toString())}
 				/>
 				<Input
 					placeholder='Field Ref Name'
 					marginTop='8px'
+					disabled={!selectedView}
 					value={returnRefName('field', selectedField)}
 					onChange={(e) =>
 						handleEditRefName(
