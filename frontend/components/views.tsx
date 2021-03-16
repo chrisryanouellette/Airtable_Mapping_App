@@ -26,12 +26,18 @@ export function SelectViews(props: SelectViewProps) {
 		const tables = Object.values(props.tableMappings).map((mapping) =>
 			props.base.getTable(mapping.id)
 		)
+		const viewIds: string[] = []
 		const views = Object.fromEntries(
-			tables.map((table) => [table.id, table.views])
+			tables.map((table) => {
+				viewIds.push(...table.views.map((view) => view.id))
+				return [table.id, table.views]
+			})
 		)
 		setviews(views)
 		setselectedViews(
-			Object.values(props.viewMappings).map((mapping) => mapping.id)
+			Object.values(props.viewMappings)
+				.filter((mapping) => viewIds.includes(mapping.id))
+				.map((mapping) => mapping.id)
 		)
 	}, [props.step])
 
