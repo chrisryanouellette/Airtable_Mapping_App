@@ -1,7 +1,7 @@
 import { Base, Field, View } from '@airtable/blocks/models'
 import { Box, Button, Text } from '@airtable/blocks/ui'
 import React, { useEffect, useState } from 'react'
-import { createRefName, sortByProp, splitRefName } from '../helpers'
+import { handleRefName, sortByProp, splitRefName } from '../helpers'
 import { UpdateMappings } from '../hooks/useMappings'
 import { TableMapping, ViewMapping } from '../types'
 import { Container } from './styled'
@@ -25,9 +25,9 @@ export function SelectFields(props: SelectFieldProps) {
 
 	useEffect(() => {
 		if (props.step !== 2) return
-		const tables = Object.values(props.tableMappings).map((mapping) =>
-			props.base.getTable(mapping.id)
-		)
+		const tables = Object.values(props.tableMappings)
+			.filter((mapping) => props.base.getTableByIdIfExists(mapping.id))
+			.map((mapping) => props.base.getTable(mapping.id))
 		const fields: { [viewId: string]: Field[] } = {}
 		tables.forEach((table) =>
 			table.views
@@ -77,11 +77,13 @@ export function SelectFields(props: SelectFieldProps) {
 					field = fields.find((f) => f.id === id)
 					if (field) return true
 				})
-				let refName = createRefName(field.name)
-				if (viewMapping.fields[refName]) {
-					refName =
-						refName + Math.floor(Math.random() * 100).toString()
-				}
+				let refName = handleRefName({
+					id,
+					model: field,
+					mappings: viewMapping.fields,
+					newMappings:
+						viewMappings[viewMapping.refName]?.fields || {},
+				})
 				viewMapping.fields[refName] = {
 					id: field.id,
 					tableId: tableMapping.id,

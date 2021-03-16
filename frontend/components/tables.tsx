@@ -1,9 +1,9 @@
-import { TableMapping } from '../types'
+import { AllMappings, TableMapping } from '../types'
 import { Box, Button, Text } from '@airtable/blocks/ui'
 import { Base, Table } from '@airtable/blocks/models'
 import { Card } from './styled/card'
 import { Container } from './styled'
-import { createRefName } from '../helpers'
+import { handleRefName } from '../helpers'
 import { UpdateMappings } from '../hooks/useMappings'
 import React, { useEffect, useState } from 'react'
 
@@ -20,9 +20,9 @@ export function SelectTables(props: SelectTablesProps) {
 
 	useEffect(() => {
 		if (props.step !== 0) return
-		const selectedTables = Object.values(props.tableMappings).map(
-			(mapping) => mapping.id
-		)
+		const selectedTables = Object.values(props.tableMappings)
+			.filter((mapping) => props.base.getTableByIdIfExists(mapping.id))
+			.map((mapping) => mapping.id)
 		setselectedTables(selectedTables)
 	}, [props.step, !!Object.keys(props.tableMappings).length])
 
@@ -43,10 +43,12 @@ export function SelectTables(props: SelectTablesProps) {
 		const tableMappings: { [refName: string]: TableMapping } = {}
 		selectedTables.forEach((id) => {
 			const table = props.base.getTable(id)
-			let refName = createRefName(table.name)
-			if (tableMappings[refName]) {
-				refName = refName + Math.floor(Math.random() * 100).toString()
-			}
+			const refName = handleRefName({
+				id,
+				model: table,
+				mappings: props.tableMappings,
+				newMappings: tableMappings,
+			})
 			tableMappings[refName] = {
 				id,
 				baseId: props.base.id,

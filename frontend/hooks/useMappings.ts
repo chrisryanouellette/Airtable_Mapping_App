@@ -49,6 +49,23 @@ export function useMappings(): {
 			return 'fields' in Object.values(mappings)[0]
 		}
 
+		function mergeMappings<
+			T extends AllMappings
+		>(...mappings: T[]): { [refName: string]: T } {
+			const merged: T[] = []
+			mappings.forEach((current) => {
+				const existing = merged.find(
+					(mapping) => mapping.id === current.id
+				)
+				if (!existing) {
+					merged.push(current)
+				}
+			})
+			return Object.fromEntries(
+				merged.map((mapping) => [mapping.refName, mapping])
+			)
+		}
+
 		function removeOldReference(
 			items: { [index: string]: string },
 			itemId: string,
@@ -63,7 +80,10 @@ export function useMappings(): {
 		}
 
 		if (key === 'bases' && isBaseMappings(newMappings)) {
-			mappings[key] = newMappings
+			mappings[key] = mergeMappings<BaseMapping>(
+				...Object.values(mappings.bases),
+				...Object.values(newMappings)
+			)
 		} else if (key === 'tables' && isTableMappings(newMappings)) {
 			Object.values(newMappings).forEach((tableMappings) => {
 				const baseMapping = Object.values(mappings.bases).find(
@@ -76,7 +96,10 @@ export function useMappings(): {
 					tableMappings.refName
 				)
 			})
-			mappings[key] = newMappings
+			mappings[key] = mergeMappings<TableMapping>(
+				...Object.values(mappings.tables),
+				...Object.values(newMappings)
+			)
 		} else if (key === 'views' && isViewMappings(newMappings)) {
 			Object.values(newMappings).forEach((viewMappings) => {
 				const tableMapping = Object.values(mappings.tables).find(

@@ -1,7 +1,7 @@
 import { Base, View } from '@airtable/blocks/models'
 import { Box, Button, Text } from '@airtable/blocks/ui'
 import React, { useEffect, useState } from 'react'
-import { createRefName } from '../helpers'
+import { handleRefName } from '../helpers'
 import { UpdateMappings } from '../hooks/useMappings'
 import { TableMapping, ViewMapping } from '../types'
 import { Container } from './styled'
@@ -23,9 +23,9 @@ export function SelectViews(props: SelectViewProps) {
 
 	useEffect(() => {
 		if (props.step !== 1) return
-		const tables = Object.values(props.tableMappings).map((mapping) =>
-			props.base.getTable(mapping.id)
-		)
+		const tables = Object.values(props.tableMappings)
+			.filter((mapping) => props.base.getTableByIdIfExists(mapping.id))
+			.map((mapping) => props.base.getTable(mapping.id))
 		const viewIds: string[] = []
 		const views = Object.fromEntries(
 			tables.map((table) => {
@@ -69,10 +69,12 @@ export function SelectViews(props: SelectViewProps) {
 			const existingView = Object.values(props.viewMappings).find(
 				(view) => view.id === id
 			)
-			let refName = createRefName(view.name)
-			if (viewMappings[refName]) {
-				refName = refName + Math.floor(Math.random() * 100).toString()
-			}
+			const refName = handleRefName({
+				id,
+				model: view,
+				mappings: props.viewMappings,
+				newMappings: viewMappings,
+			})
 			viewMappings[refName] = {
 				id: view.id,
 				name: view.name,
