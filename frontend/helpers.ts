@@ -14,7 +14,7 @@ export function handleRefName(args: {
 		createRefName(model.name)
 	if (
 		(mappings[refName] || newMappings[refName]) &&
-		mappings[refName].id !== id
+		mappings[refName]?.id !== id
 	) {
 		refName = refName + Math.floor(Math.random() * 100).toString()
 	}
