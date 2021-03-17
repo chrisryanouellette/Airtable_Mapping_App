@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react'
+import { createRefName } from '../helpers'
 import {
 	AllMappings,
 	BaseMapping,
@@ -62,7 +63,11 @@ export function useMappings(): {
 				}
 			})
 			return Object.fromEntries(
-				merged.map((mapping) => [mapping.refName, mapping])
+				merged.map((mapping) => {
+					const refName =
+						mapping.refName || createRefName(mapping.name)
+					return [refName, mapping]
+				})
 			)
 		}
 
