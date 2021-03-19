@@ -39,10 +39,13 @@ export function SelectFields(props: SelectFieldProps) {
 				.forEach((view) => (fields[view.id] = table.fields))
 		)
 		const selectedFields: { [viewId: string]: string[] } = {}
-		Object.values(props.viewMappings).forEach((mapping) => {
-			selectedFields[mapping.id] = Object.values(mapping.fields).map(
-				(field) => field.id
-			)
+		Object.values(props.viewMappings)
+		.forEach((mapping) => {
+			selectedFields[mapping.id] = Object.values(mapping.fields)
+				.filter((field) =>
+					fields[mapping.id].some((f) => f.id === field.id)
+				)
+				.map((field) => field.id)
 		})
 
 		setfields(fields)
