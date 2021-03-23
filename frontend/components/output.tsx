@@ -2,7 +2,7 @@ import { Box, Button, Text } from '@airtable/blocks/ui'
 import React, { useRef } from 'react'
 import { Mappings } from '../types'
 import { Container } from './styled'
-import { TextArea } from './styled/textarea'
+import TextArea from './styled/textarea'
 
 interface OutputMappingsProps {
 	step: number
