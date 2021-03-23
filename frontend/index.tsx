@@ -13,18 +13,22 @@ import { useStyles } from './hooks/useStyles'
 import { UpdateMappings, useMappings } from './hooks/useMappings'
 import { SelectViews } from './components/views'
 import { SelectFields } from './components/fields'
-import { createRefName } from './helpers'
-import { AllMappings, BaseMapping, Mappings } from './types'
+import { createRefName, parseMappings } from './helpers'
+import { AllMappings, BaseMapping } from './types'
 import { EditReferenceNames } from './components/editNames'
 import { OutputMappings } from './components/output'
 import { Header } from './components/header'
-import { TextArea } from './components/styled/textarea'
+import TextArea from './components/styled/textarea'
+import { MappingDiffDialog } from './components/mappingDiffDialog'
 
 function MappingApp() {
 	const base = useBase() as Base
 	const [step, setstep] = useState(0)
 	const { mappings, setMappings } = useMappings()
 	const [showMappingSettings, setshowMappingSettings] = useState<boolean>(
+		false
+	)
+	const [showMappingDiffDialog, setshowMappingDiffDialog] = useState<boolean>(
 		false
 	)
 
@@ -52,13 +56,8 @@ function MappingApp() {
 
 	const handleExistingMappings = useCallback(
 		(e: React.ChangeEvent<HTMLTextAreaElement>) => {
-			try {
-				const mappings: Mappings = JSON.parse(e.target.value)
-				if (!mappings?.bases || !mappings.tables || !mappings.views) {
-					throw new Error(
-						'Missing required field in mappings ( bases, tables, or views ).'
-					)
-				}
+			const mappings = parseMappings(e.target.value)
+			if (mappings) {
 				Object.entries(mappings).forEach(
 					([key, mapping]: [
 						'bases' | 'tables' | 'views',
@@ -67,8 +66,6 @@ function MappingApp() {
 						setMappings(key, mapping)
 					}
 				)
-			} catch (error) {
-				console.error(error.message)
 			}
 		},
 		[]
@@ -83,6 +80,7 @@ function MappingApp() {
 			<Header
 				step={step}
 				showSettingMenu={() => setshowMappingSettings(true)}
+				showMappingDiffDialog={() => setshowMappingDiffDialog(true)}
 			/>
 			<Body>
 				{showMappingSettings && (
@@ -98,6 +96,10 @@ function MappingApp() {
 						/>
 					</Dialog>
 				)}
+				<MappingDiffDialog
+					showMappingDiffDialog={showMappingDiffDialog}
+					onClose={() => setshowMappingDiffDialog(false)}
+				/>
 				<SelectTables
 					step={step}
 					base={base}

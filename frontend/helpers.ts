@@ -1,5 +1,20 @@
 import { Field, Table, View } from '@airtable/blocks/models'
-import { AllMappings, FieldMapping } from './types'
+import { AllMappings, FieldMapping, Mappings } from './types'
+
+export function parseMappings(raw: string): Mappings | null {
+	try {
+		const mappings: Mappings = JSON.parse(raw)
+		if (!mappings?.bases || !mappings.tables || !mappings.views) {
+			throw new Error(
+				'Missing required field in mappings ( bases, tables, or views ).'
+			)
+		}
+		return mappings
+	} catch (error) {
+		console.error(error.message)
+		return null
+	}
+}
 
 /** Finds an existing refName or makes a new one */
 export function handleRefName(args: {
@@ -60,4 +75,10 @@ export function sortByProp<T>(list: T[], prop: string): T[] {
 		if (a[prop] > b[prop]) return 1
 		return 0
 	})
+}
+
+export function findArrDiff(arr1: string[], arr2: string[]): string[] {
+	return arr1
+		.filter((refName) => !arr2.includes(refName))
+		.concat(arr2.filter((refName) => !arr1.includes(refName)))
 }

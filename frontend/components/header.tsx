@@ -5,6 +5,7 @@ import { Container } from './styled'
 interface HeaderProps {
 	step: number
 	showSettingMenu(): void
+	showMappingDiffDialog(): void
 }
 
 export function Header(props: HeaderProps) {
@@ -17,13 +18,20 @@ export function Header(props: HeaderProps) {
 				width='100%'
 			>
 				<Heading size='large'>Mapping App</Heading>
-				{props.step === 0 && (
+				<Container display='flex' gap='16px'>
+					{props.step === 0 && (
+						<Button
+							icon={<Icon name='edit' />}
+							aria-label='edit mappings'
+							onClick={props.showSettingMenu}
+						/>
+					)}
 					<Button
-						icon={<Icon name='edit' />}
-						aria-label='edit mappings'
-						onClick={props.showSettingMenu}
+						icon={<Icon name='lookup' />}
+						aria-label='compare mappings'
+						onClick={props.showMappingDiffDialog}
 					/>
-				)}
+				</Container>
 			</Container>
 		</header>
 	)
