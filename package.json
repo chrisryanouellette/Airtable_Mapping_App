@@ -14,7 +14,6 @@
 		"start": "block run",
 		"reinstall": "del package-lock.json && npm i",
 		"release": "node ./scripts/release.js",
-		"release-local": "block release",
 		"lint": "eslint --ext .js,.jsx,.ts,.tsx frontend"
 	},
 	"dependencies": {
